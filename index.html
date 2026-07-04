@@ -489,6 +489,7 @@ function validate(){
 
 document.querySelectorAll("input,textarea").forEach(e=>e.addEventListener("input",()=>e.classList.remove("invalid")));
 document.getElementById("consentCheck").addEventListener("change",function(){this.classList.remove("invalid");});
+document.getElementById("socialsContainer").addEventListener("input",function(e){if(e.target.tagName==="INPUT")e.target.classList.remove("invalid");});
 
 // ══════════════════════════════════════
 // SUBMIT
