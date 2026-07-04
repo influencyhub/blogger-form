@@ -16,6 +16,7 @@
   --green:#5bd17a; --red:#ff5a5a; --line:#262629;
   --shadow:0 30px 80px -30px rgba(229,130,10,.35);
 }
+#socialsContainer.invalid-section{outline:1.5px solid var(--red);border-radius:12px;padding:4px}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
 body{
@@ -339,7 +340,7 @@ body.fonts-ready .rail-track{opacity:1;animation-play-state:running}
   <div class="result" id="successResult">
     <div class="medal">🎉</div>
     <h2>Готово!</h2>
-    <p>Спасибо, данные сохранены. Ну привет, ювелир&nbsp;контента!</p>
+    <p>Спасибо, данные сохранены.<br>Ну привет, ювелир контента!</p>
   </div>
 
   <!-- ERROR -->
@@ -434,6 +435,15 @@ function validate(){
     const el=document.getElementById(id);
     if(!el.value.trim()){el.classList.add("invalid");ok=false;}else{el.classList.remove("invalid");}
   });
+  // Проверка года рождения
+  var bday = document.getElementById("birthday").value;
+  if (bday) {
+    var year = parseInt(bday.split("-")[0]);
+    if (year > new Date().getFullYear() || year < 1930 || bday.split("-")[0].length > 4) {
+      document.getElementById("birthday").classList.add("invalid");
+      ok = false;
+    }
+  }
   // At least one social network
   const socials = getSocials();
   if(socials.length === 0){
@@ -444,7 +454,9 @@ function validate(){
   // Consent checkbox
   const consent = document.getElementById("consentCheck");
   if(!consent.checked){consent.classList.add("invalid");ok=false;}else{consent.classList.remove("invalid");}
-  // Проверка соответствия платформы и ссылки
+// Проверка соответствия платформы и ссылки
+  var container = document.getElementById('socialsContainer');
+  container.classList.remove('invalid-section');
   var domainMap = {
     'ИНСТ': ['instagram.com'],
     'ТТ': ['tiktok.com'],
@@ -452,6 +464,16 @@ function validate(){
     'ТГ': ['t.me','telegram.me'],
     'ВК': ['vk.com']
   };
+  document.querySelectorAll('.social-entry').forEach(function(entry) {
+    var sel = entry.querySelector('select').value;
+    var inp = entry.querySelector('input');
+    var val = inp.value.trim();
+    if (val.match(/^https?:\/\//)) {
+      var validDomains = domainMap[sel] || [];
+      var matchesPlatform = validDomains.some(function(d) { return val.indexOf(d) !== -1; });
+      if (!matchesPlatform) { inp.classList.add('invalid'); container.classList.add('invalid-section'); ok = false; }
+    }
+  });
   document.querySelectorAll('.social-entry').forEach(function(entry) {
     var sel = entry.querySelector('select').value;
     var inp = entry.querySelector('input');
