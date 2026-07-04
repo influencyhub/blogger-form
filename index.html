@@ -457,6 +457,7 @@ function validate(){
 // Проверка соответствия платформы и ссылки
   var container = document.getElementById('socialsContainer');
   container.classList.remove('invalid-section');
+  container.querySelectorAll('input').forEach(function(inp){inp.classList.remove('invalid');});
   var domainMap = {
     'ИНСТ': ['instagram.com'],
     'ТТ': ['tiktok.com'],
