@@ -250,7 +250,7 @@ body.fonts-ready .rail-track{opacity:1;animation-play-state:running}
   <!-- HEADER -->
   <div class="form-header">
     <h1>Анкета <span class="o">блогера</span></h1>
-    <p class="sub">Заполни форму, чтобы мы знали о тебе чуть больше. Это займёт пару минут.</p>
+    <p class="sub" id="headerSub">Заполни форму, чтобы мы знали о тебе чуть больше. Это займёт пару минут.</p>
   </div>
 
   <!-- FORM -->
@@ -339,7 +339,7 @@ body.fonts-ready .rail-track{opacity:1;animation-play-state:running}
   <div class="result" id="successResult">
     <div class="medal">🎉</div>
     <h2>Готово!</h2>
-    <p>Спасибо, данные сохранены. Ну привет, ювелир контента!</p>
+    <p>Спасибо, данные сохранены. Ну привет, ювелир&nbsp;контента!</p>
   </div>
 
   <!-- ERROR -->
@@ -444,6 +444,24 @@ function validate(){
   // Consent checkbox
   const consent = document.getElementById("consentCheck");
   if(!consent.checked){consent.classList.add("invalid");ok=false;}else{consent.classList.remove("invalid");}
+  // Проверка соответствия платформы и ссылки
+  var domainMap = {
+    'ИНСТ': ['instagram.com'],
+    'ТТ': ['tiktok.com'],
+    'ЮТ': ['youtube.com','youtu.be'],
+    'ТГ': ['t.me','telegram.me'],
+    'ВК': ['vk.com']
+  };
+  document.querySelectorAll('.social-entry').forEach(function(entry) {
+    var sel = entry.querySelector('select').value;
+    var inp = entry.querySelector('input');
+    var val = inp.value.trim();
+    if (val.match(/^https?:\/\//)) {
+      var validDomains = domainMap[sel] || [];
+      var matchesPlatform = validDomains.some(function(d) { return val.indexOf(d) !== -1; });
+      if (!matchesPlatform) { inp.classList.add('invalid'); ok = false; }
+    }
+  });
   return ok;
 }
 
@@ -473,6 +491,7 @@ document.getElementById("bloggerForm").addEventListener("submit",async e=>{
   try{
     await fetch(SCRIPT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify(payload)});
     document.getElementById("bloggerForm").style.display="none";
+    document.getElementById("headerSub").style.display = "none";
     document.getElementById("successResult").classList.add("visible");
   }catch(err){
     console.error(err);
