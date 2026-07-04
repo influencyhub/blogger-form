@@ -498,6 +498,7 @@ document.getElementById("socialsContainer").addEventListener("input",function(e)
 document.getElementById("bloggerForm").addEventListener("submit",async e=>{
   e.preventDefault();
   if(!validate()) return;
+  try{document.getElementById("tykSound").play();}catch(e){}
   const btn=document.getElementById("submitBtn");
   btn.disabled=true; btn.classList.add("loading");
   const payload={
@@ -532,5 +533,6 @@ if(document.fonts&&document.fonts.ready){document.fonts.ready.then(()=>document.
 else{document.body.classList.add("fonts-ready");}
 setTimeout(()=>document.body.classList.add("fonts-ready"),3000);
 </script>
+<audio id="tykSound" preload="auto" src="tyk.mp3"></audio>
 </body>
 </html>
